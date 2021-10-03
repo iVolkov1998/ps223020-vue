@@ -44,7 +44,6 @@ export default {
   methods: {
     getNotes() {
       const path = 'http://localhost:50898/api/Notes';
-      axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
       axios.get(path)
         .then((res) => {
           this.notes = res.data;
