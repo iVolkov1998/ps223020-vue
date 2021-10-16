@@ -5,6 +5,7 @@
         <h1>Заметки</h1>
         <hr />
         <br /><br />
+        <alert :message="message" v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.note-modal>
           Добавить заметку
         </button>
@@ -40,7 +41,7 @@
     <b-modal
       ref="addNoteModal"
       id="note-modal"
-      title="Добавте новую заметку"
+      title="Добавьте новую заметку"
       hide-footer
     >
       <b-form @submit="onSubmit" @reset="onReset" class="w-100">
@@ -97,6 +98,7 @@
 
 <script>
 import axios from "axios";
+import Alert from "../components/Alert"
 
 export default {
   data() {
@@ -107,11 +109,16 @@ export default {
         body: '',
         createTime: ''
       },
+      message: '',
+      showMessage: false
     };
+  },
+  components: {
+    alert: Alert,
   },
   methods: {
     getNotes() {
-      const path = "http://localhost:52362/api/Notes";
+      const path = "http://localhost:50235/api/Notes";
       axios
         .get(path)
         .then((res) => {
@@ -123,11 +130,15 @@ export default {
         });
     },
     addNote(payload) {
-      const path = "http://localhost:52362/api/Notes";
-      axios.post(path, payload)
+      const path = "http://localhost:50235/api/Notes";
+      const headers = { 
+        "Content-Type": "application/json"
+      };
+      axios.post(path, payload, { headers })
         .then(() => {
           this.getNotes();
-          console.log("POST запрос был выполнен");
+          this.message = "Заметка добавлена";
+          this.showMessage = true;
         })
         .catch((error) => {
           // eslint-отключение следующей строки
